@@ -48,6 +48,14 @@ interface TreeViewElement {
   isSelectable?: boolean;
   children?: TreeViewElement[];
 }
+interface BuildNode {
+  id: string;
+  name: string;
+  isSelectable: boolean;
+  children?: Record<string, BuildNode>;
+  path?: string;
+  content?: string;
+}
 interface TreeContextProps {
   selectedId: string | undefined;
   expandedItems: string[] | undefined;
@@ -86,8 +94,8 @@ function ShikiViewer({
     async function highlight() {
       try {
         setIsLoading(true);
-        const shikiTheme =
-          resolvedTheme === "dark" ? "github-dark" : "github-light";
+        // const shikiTheme =
+        //   resolvedTheme === "dark" ? "github-dark" : "github-light";
         // const highlighter = await createHighlighter({
         //   langs: [
         //     "tsx",
@@ -110,7 +118,7 @@ function ShikiViewer({
           setHtml(`<pre><code>${code}</code></pre>`);
           setIsLoading(false);
         }
-      } catch (error) {
+      } catch {
         if (mounted) {
           setHtml(`<pre><code>${code}</code></pre>`);
           setIsLoading(false);
@@ -159,12 +167,10 @@ function ShikiViewer({
 // --- File Header ---
 function FileHeader({
   file,
-  component,
   onCopy,
   copied,
 }: {
   file: { path: string; content?: string };
-  component: ApiComponent;
   onCopy: () => void;
   copied: boolean;
 }) {
@@ -227,7 +233,6 @@ function TreeIndicator({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { direction } = useTree();
   return (
     <div
       className={cn(
@@ -525,30 +530,34 @@ export default function ComponentFileViewer({
   const files = component.files.filter((f) => f.content);
   // Build tree structure
   const tree = useMemo(() => {
-    const root: Record<string, any> = {};
-    for (const file of files) {
+    const root = files.reduce<Record<string, BuildNode>>((acc, file) => {
       const parts = file.path.split("/");
-      let current = root;
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
+      let current = acc;
+      parts.forEach((part, index) => {
+        const isLast = index === parts.length - 1;
         if (!current[part]) {
-          current[part] =
-            i === parts.length - 1
-              ? { ...file, id: file.path, name: part, isSelectable: true }
-              : {
-                  id: parts.slice(0, i + 1).join("/"),
-                  name: part,
-                  children: {},
-                  isSelectable: false,
-                };
+          current[part] = isLast
+            ? { ...file, id: file.path, name: part, isSelectable: true }
+            : {
+                id: parts.slice(0, index + 1).join("/"),
+                name: part,
+                children: {},
+                isSelectable: false,
+              };
         }
-        current = current[part].children || current[part];
-      }
-    }
-    const toArray = (obj: Record<string, any>): TreeViewElement[] =>
-      Object.values(obj).map((item: any) =>
-        item.children ? { ...item, children: toArray(item.children) } : item
+        if (current[part].children) {
+          current = current[part].children!;
+        }
+      });
+      return acc;
+    }, {});
+    const toArray = (nodes: Record<string, BuildNode>): TreeViewElement[] => {
+      return Object.values(nodes).map((node) =>
+        node.children
+          ? { ...node, children: toArray(node.children) }
+          : (node as TreeViewElement)
       );
+    };
     return toArray(root);
   }, [files]);
   const selected = files.find((f) => f.path === selectedFile) || files[0];
@@ -584,7 +593,6 @@ export default function ComponentFileViewer({
           <div className="h-full flex flex-col">
             <FileHeader
               file={selected}
-              component={component}
               onCopy={handleCopy}
               copied={copied}
             />

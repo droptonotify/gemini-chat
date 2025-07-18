@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
