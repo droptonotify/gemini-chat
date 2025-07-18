@@ -5,7 +5,7 @@ import * as React from "react"
 import { motion } from "framer-motion";
  
 import { useOnClickOutside } from "usehooks-ts";
-import { cn } from "lib/utils";
+import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 
 interface Tab {
