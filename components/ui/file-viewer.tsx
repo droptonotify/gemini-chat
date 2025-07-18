@@ -34,6 +34,7 @@ import {
 import { toast } from "sonner";
 
 export interface ApiComponent {
+  author: string;
   name: string;
   version: string;
   files: Array<{
