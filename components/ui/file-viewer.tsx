@@ -6,11 +6,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  PanelResizeHandle as ResizableHandle,
+  Panel as ResizablePanel,
+  PanelGroup as ResizablePanelGroup,
+} from "react-resizable-panels";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { cn } from "@/lib/utils";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import {
@@ -91,41 +91,11 @@ function ShikiViewer({
   const { resolvedTheme } = useTheme();
   useEffect(() => {
     let mounted = true;
-    async function highlight() {
-      try {
-        setIsLoading(true);
-        // const shikiTheme =
-        //   resolvedTheme === "dark" ? "github-dark" : "github-light";
-        // const highlighter = await createHighlighter({
-        //   langs: [
-        //     "tsx",
-        //     "typescript",
-        //     "javascript",
-        //     "jsx",
-        //     "json",
-        //     "css",
-        //     "scss",
-        //     "html",
-        //     "markdown",
-        //   ],
-        //   themes: [shikiTheme],
-        // });
-        // const highlightedHtml = highlighter.codeToHtml(code, {
-        //   lang: lang === "tsx" ? "typescript" : lang,
-        //   theme: shikiTheme,
-        // });
-        if (mounted) {
-          setHtml(`<pre><code>${code}</code></pre>`);
-          setIsLoading(false);
-        }
-      } catch {
-        if (mounted) {
-          setHtml(`<pre><code>${code}</code></pre>`);
-          setIsLoading(false);
-        }
-      }
+    // Shiki is disabled, so we'll just show the raw code.
+    if (mounted) {
+      setHtml(`<pre><code>${code}</code></pre>`);
+      setIsLoading(false);
     }
-    // highlight();
     return () => {
       mounted = false;
     };
@@ -587,7 +557,7 @@ export default function ComponentFileViewer({
           component={component}
         />
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle />
       <ResizablePanel defaultSize={75} minSize={40}>
         {selected && (
           <div className="h-full flex flex-col">
