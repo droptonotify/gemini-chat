@@ -3,14 +3,14 @@
 // UNCOMMENT THIS LINE ONCE INSTALLED TO RENDER ALL THE CODE WITH SHIKI
 // import { createHighlighter } from "shiki";
 
-import { Badge } from "./badge";
-import { Button } from "./button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "./resizable";
-import { ScrollArea } from "./scroll-area";
+} from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import {

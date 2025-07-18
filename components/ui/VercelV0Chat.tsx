@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "./textarea";
 import { cn } from "@/lib/utils";
 import {
     ImageIcon,
@@ -90,7 +90,7 @@ export function VercelV0Chat() {
 
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
-            <h1 className="text-4xl font-bold text-black dark:text-white">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-black dark:text-white">
                 What can I help you ship?
             </h1>
 
@@ -100,7 +100,7 @@ export function VercelV0Chat() {
                         <Textarea
                             ref={textareaRef}
                             value={value}
-                            onChange={(e) => {
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                 setValue(e.target.value);
                                 adjustHeight();
                             }}
@@ -166,7 +166,7 @@ export function VercelV0Chat() {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-3 mt-4">
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
                     <ActionButton
                         icon={<ImageIcon className="w-4 h-4" />}
                         label="Clone a Screenshot"
